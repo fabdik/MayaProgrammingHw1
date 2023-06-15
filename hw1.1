@@ -1,0 +1,11 @@
+import maya.cmds as cmds
+min = cmds.playbackOptions(q = True, min = True)
+max = cmds.playbackOptions(q = True, max = True)
+cmds.polySphere(r = 1) 
+
+if(cmds.currentTime(min)):
+    cmds.move(-10, 0, 0)
+    cmds.setKeyframe()
+if(cmds.currentTime(max)):
+    cmds.move(10, 0, 0)
+    cmds.setKeyframe()
