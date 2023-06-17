@@ -1,0 +1,12 @@
+import maya.cmds as cmds
+import random
+def createPlanet(planetRadius, moon, moonRadius):
+    if(planetRadius < moonRadius):
+        cmds.setAttr("Error. Radius of the moon can not be bigger than moon radius")
+    else:
+        planet = cmds.polySphere(n = "Earth", r = planetRadius)
+        for i in range(moon):
+            cmds.polySphere(n = "moon1", r = moonRadius)
+            cmds.xform(t = (random.randint(-50, 50), random.randint(-50, 50),random.randint(-50, 50)))
+
+createPlanet(5, 7, 2)
