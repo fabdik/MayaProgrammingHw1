@@ -7,6 +7,6 @@ def createPlanet(planetRadius, moon, moonRadius):
         planet = cmds.polySphere(n = "Earth", r = planetRadius)
         for i in range(moon):
             cmds.polySphere(n = "moon1", r = moonRadius)
-            cmds.xform(t = (random.randint(-50, 50), random.randint(-50, 50),random.randint(-50, 50)))
+            cmds.xform(t = (random.randint(-30, 30), random.randint(-30, 30),random.randint(-30, 30)))
 
 createPlanet(5, 7, 2)
