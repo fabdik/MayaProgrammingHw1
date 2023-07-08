@@ -1,0 +1,52 @@
+import maya.cmds as cmds
+import maya.mel as mel
+
+#deleting the UI
+if cmds.window("windowId", exists = 1):
+    cmds.deleteUI("windowId")
+#deleting the saved data
+if cmds.windowPref("windowId", exists = 1):
+    cmds.windowPref("windowId", remove = 1)
+
+
+#creating the window
+my_window = cmds.window("windowId", title = "My Window", width = 400, height = 120)
+
+#creating the main layout 
+#main_layout = cmds.formLayout("formLayoutId", parent = "windowId")
+#creating the column layout for text field
+textField_layout = cmds.columnLayout("columnLayoutId", adjustableColumn = True, parent = my_window)
+#creating the text field 
+text = cmds.textField("textId", placeholderText = "Object name", parent = "columnLayoutId", width = 400) 
+
+#aligning to the center the column layout
+cmds.columnLayout("columnLayoutId", adjustableColumn = True)
+cmds.columnLayout("columnLayoutId", edit = 1, columnAlign = 'center')
+
+#creating the row Layout for radio buttons 
+row_layout = cmds.rowLayout("rowLayoutId", width = 400, numberOfColumns = 3, parent = my_window)
+#creating the radio buttons 
+buttons = cmds.radioButtonGrp("buttonsId", labelArray3=['Sphere', 'Cube', 'Cone'], numberOfRadioButtons=3, parent = "rowLayoutId")
+#creating the column layout for check box 
+checkbox_layout = cmds.columnLayout("checkboxIdLayout", width = 400, parent = my_window)
+#create check box 
+cmds.checkBox(label = "Put into a group", parent = "checkboxIdLayout")
+cmds.checkBox(label = "Move x by 10 uni", parent = "checkboxIdLayout")
+cmds.checkBox(label = "Display layer / Template", parent = "checkboxIdLayout")
+
+#create the row layout for buttons 
+btn_layout = cmds.rowLayout("btnId", numberOfColumns = 2, width = 400, parent = my_window)
+cmds.button("btn1", label = "Create", parent = "btnId")
+cmds.button("btn2", label = "Cancel", parent = "btnId")
+cmds.rowLayout(btn_layout, edit = 1, columnAttach = (2, 'right', 0))
+
+#to find out which button was selected
+def selected_radio_button():
+    selected_button = cmds.radioButtonGrp("buttonsId", query = True, select = True)
+    return selected_button
+#making a group
+def put_into_group():
+    group = cmds.group(selected_radio_button[0])
+
+#
+cmds.showWindow()
