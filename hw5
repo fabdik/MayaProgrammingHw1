@@ -1,0 +1,45 @@
+import maya.cmds as cmds
+
+class Rocket:
+    def __init__(self, bodyParts=0, noseConeHeight=0, fuelTanks=0):
+        self.bodyParts = bodyParts
+        self.noseConeHeight = noseConeHeight
+        self.fuelTanks = fuelTanks
+    
+    def generateModels(self, bodyParts=0, noseConeHeight = 0, fuelTanks=0):
+        prev_cylinder = None
+        total_height = 0
+        
+        #creating the base
+        for i in range(bodyParts):
+            if i == 0:
+                cylinder = cmds.polyCylinder(n="cylinder")[0]
+                bounding_box = cmds.xform(cylinder, query=True, bb=True)
+                cylinder_height = bounding_box[4] - bounding_box[1]
+                cmds.move(0, cylinder_height / 2, 0, cylinder)  # Move the first cylinder on top of the grid
+                first_cylinder_coordinates = cmds.xform(cylinder, q = 1, bb = 1)
+            else:
+                cylinder = cmds.duplicate(prev_cylinder)[0]
+                prev_height = cmds.getAttr(prev_cylinder + ".translateY")
+                bounding_box = cmds.xform(cylinder, query=True, bb=True)
+                cylinder_height = bounding_box[4] - bounding_box[1]
+                cmds.move(0, prev_height + cylinder_height, 0, cylinder)
+                
+            prev_cylinder = cylinder
+            total_height += cylinder_height
+
+        #creating the nose cone
+        new_cone = cmds.polyCone(n= "top", height = noseConeHeight)[0]
+        cmds.move(0, total_height + float(noseConeHeight)/2, 0)
+
+        #creating the fuel 
+        fuel1 = cmds.polyCone(name = "first_fuel", height = 1, radius = 0.5)
+        cmds.xform(fuel1, t = (first_cylinder_coordinates[0], first_cylinder_coordinates[1] - 0.5, 0))
+        fuel2 = cmds.polyCone(name = "second_fuel", height = 1, radius = 0.5)
+        cmds.xform(fuel2, t = (0, first_cylinder_coordinates[1] -0.5, first_cylinder_coordinates[5]) )
+        fuel3 = cmds.polyCone(name = "third_fuel", height = 1, radius = 0.5)
+        cmds.xform(fuel3, t = (first_cylinder_coordinates[3], first_cylinder_coordinates[1] -0.5, 0))
+        fuel4 = cmds.polyCone(name = "fourth_fuel", height = 1, radius = 0.5)
+        cmds.xform(fuel4, t = (0, first_cylinder_coordinates[1] -0.5, first_cylinder_coordinates[2] ))
+my_rocket = Rocket()
+my_rocket.generateModels(bodyParts=4, noseConeHeight=10, fuelTanks=4)
